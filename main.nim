@@ -1,4 +1,4 @@
-import dayThree/dayThree as question
+import dayFour/dayFour as question
 
 echo question.solve()
 
