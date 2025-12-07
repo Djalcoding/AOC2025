@@ -24,7 +24,7 @@ proc accesible(i:int, j:int, matrix:var seq[seq[bool]]):bool =
   return count <= 3;
 
 proc solve*():uint = 
-  let file = readFile("./dayFour/test.txt").split('\n')
+  let file = readFile("./dayFour/input.txt").split('\n')
   var matrix:seq[seq[bool]];
   for line in file:
     if(line == ""):
@@ -34,17 +34,15 @@ proc solve*():uint =
       matrix[matrix.len()-1].add(c == '@')
   
   var ans:uint = 0;
-  var i:int = 0;
-  var j:int = 0;
-  while(i < matrix.len()-1):
-    while(j < matrix[0].len()-1):
-      if(accesible(i,j,matrix) and matrix[i][j]):
-        matrix[i][j] = false;
-        i = 0;
-        j = 0;
-        ans+=1;
-        break;
-      j+=1;
-    i+=1;
+  var found = true;
+  while found:
+    found = false
+    for i in countup(0,matrix.len()-1):
+      for j in countup(0,matrix[0].len()-1):
+        if(matrix[i][j] and accesible(i,j,matrix)):
+          matrix[i][j] = false
+          found = true;
+          ans+=1;
+    
   
   return ans;
