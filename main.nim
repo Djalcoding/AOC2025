@@ -1,5 +1,5 @@
-import daySix/daySix as question
+import daySeven/daySeven as question
 
-echo "Ans : ", question.solvePartTwo()
+echo "Ans : ", question.solveDayTwo()
 
 

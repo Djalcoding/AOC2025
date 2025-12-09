@@ -52,7 +52,6 @@ proc solvePartTwo*():int =
     var i = 0;
     while(i < elements.len()):
       var curr = elements[i];
-      echo curr, " ", current_count, " ", multiplicating
       if(curr[curr.len-1] == '+'):
         ans+=current_count;
         current_count = 0;
