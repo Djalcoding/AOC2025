@@ -38,12 +38,14 @@ type wire= object
   distance:float
   cube1:int
   cube2:int
+  x:int
 
 proc `<`(a:wire, b:wire):bool = a.distance < b.distance
 
 proc newWire(list:var seq[seq[int]], first:int, second:int):wire=
   result.cube1 = first;
   result.cube2 = second;
+  result.x = list[first][0] * list[second][0];
   result.distance =distance(list[first],list[second])
 
 proc buildPriorityQueue(list:var seq[seq[int]]):HeapQueue[wire] =
@@ -53,6 +55,15 @@ proc buildPriorityQueue(list:var seq[seq[int]]):HeapQueue[wire] =
       queue.push(newWire(list, i,j))
   return queue
 
+proc getAmountOfGroups(map:var Table[int, HashSet[int]]):int =
+  var seen:HashSet[int] = initHashSet[int]()
+  var ans = 0;
+  for node in map.keys:
+    if(seen.contains(node)):
+      continue;
+    discard dfs(node,seen, map);
+    ans+=1;
+  return ans
 
 proc solveDayOne*():int =
   var list = buildList()
@@ -79,5 +90,29 @@ proc solveDayOne*():int =
   elements.sort()
   return elements[elements.len()-1] * elements[elements.len()-2] * elements[elements.len()-3];
 
+proc solvePartTwo*():int =
+  var list = buildList()
+  var map:Table[int,HashSet[int]] = initTable[int,HashSet[int]]() 
+  for i in countup(0,list.len()-1):
+    map[i]=initHashSet[int]()
+  var queue = buildPriorityQueue(list)
+  for i in countup(1,10):
+    let front = queue[0];
 
+    map[queue[0].cube1].incl(front.cube2)
+    map[queue[0].cube2].incl(front.cube1)
+    discard queue.pop();
+  
+  var last = 0
+  while(getAmountOfGroups(map) > 1): # This isn't really optimized but it works so that doesn't matter 
+    let front = queue[0];
+    if(not map.contains(front.cube1)):
+      map[front.cube1]= initHashSet[int]()
+    if(not map.contains(front.cube2)):
+      map[front.cube2]= initHashSet[int]()
+    map[front.cube1].incl(front.cube2)
+    map[front.cube2].incl(front.cube1)
+    last = front.x;
+    discard queue.pop();
 
+  return last
